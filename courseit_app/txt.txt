@@ -1,0 +1,116 @@
+
+
+
+from django.db import models
+from django.contrib.auth.models import User
+
+
+class Courses(models.Model):
+    course_name = models.CharField(max_length=255)
+    instructor_name = models.CharField(max_length=255,blank=True)
+    description = models.TextField(blank=True)
+    duration = models.CharField(max_length=50)  # e.g., "3 months"
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return self.course_name
+    
+
+class Sections(models.Model):
+    course = models.ForeignKey(Courses,related_name='sections',on_delete=models.CASCADE)
+    section_name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+
+
+    def __str__(self):
+        return self.section_name
+    
+    def Meta():
+        ordering = ['id']
+
+
+
+# Model to store chapters within a section
+class Chapter(models.Model):
+    course = models.ForeignKey(Courses,related_name='chapters',on_delete=models.CASCADE)
+    section = models.ForeignKey(Sections, related_name='chapters', on_delete=models.CASCADE)  # Foreign key to Section
+    title = models.CharField(max_length=255)  # Title of the chapter (e.g., "Algebra Basics")
+    description = models.TextField()  # Description of the chapter
+    video_url = models.URLField()  # URL to the video for this chapter
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['id']  # Ensure chapters are ordered by their ID
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.contrib import admin
+from .models import Courses,Chapter,Sections
+# Register your models here.
+
+class ChapterInline(admin.TabularInline):
+    model = Chapter
+    extra = 1  # Number of extra empty chapters to display by default
+    fields = ('title', 'description', 'video_url')  # You can customize fields here
+
+
+
+
+class SectionInline(admin.TabularInline):
+    model = Sections
+    extra = 1  # Number of extra empty sections to display by default
+    inlines = [ChapterInline]  # Nested inline for chapters within sections
+    fields = ('title', 'description')  # Customize the section fields if needed
+
+
+
+class SectionAdmin(admin.ModelAdmin):
+    inlines = [ChapterInline]
+    fields = ('title', 'description')
+      # Display chapters within the section model in the admin panel
+      # Display chapters within the section model in the admin panel
+
+
+
+class CoursesAdmin(admin.ModelAdmin):
+    list_display = ('course_name','duration','created_at','instructor_name')
+    search_fields = ('course_name','instructor_name',)
+    inlines = [SectionInline,ChapterInline]
+
+
+admin.site.register(Courses, CoursesAdmin)
+admin.site.register(Sections, SectionAdmin)
+admin.site.register(Chapter)

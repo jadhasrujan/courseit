@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CourseIt | Programs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .program-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .program-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .program-icon {
+            font-size: 2.5rem;
+            color: #007bff;
+        }
+        .program-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        .program-description {
+            font-size: 1rem;
+            color: #555;
+        }
+        .program-thumbnail {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .program-details {
+            font-size: 1rem;
+            color: #555;
+        }
+        .program-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header class="p-3 mb-3 border-bottom bg-white">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                <a href="/home" class="d-flex align-items-center mb-md-0  link-body-emphasis text-decoration-none">
+                    <h1 class="fs-4 m-0 fw-bold text-primary">Srujan Jadhav</h1>
+                </a>
+                <ul class="nav col-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="/programs" class="nav-link px-3 link-body-emphasis" style="color: black;">Programs</a></li>
+                    <li><a href="/about_us" class="nav-link px-3 link-body-emphasis" style="color: black;">About Us</a></li>
+                    <li><a href="/contact_us" class="nav-link px-3 link-body-emphasis" style="color: black;">Contact Us</a></li>
+                </ul>
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                    <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                </form>
+                <div class="dropdown text-end">
+                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                    </a>
+                    {% if user.is_authenticated %}
+                    <ul class="dropdown-menu text-small">
+                        <li><a class="dropdown-item" href="#">My Courses</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                    </ul>
+                    {% else %}
+                    <ul class="dropdown-menu text-small">
+                        <li><a class="dropdown-item" href="/sign_up/">Create a account</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="/login/">Login</a></li>
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-5">
+        <div class="container">
+            <h2 class="pb-3 border-bottom text-center">Our Diploma Programs</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for course in courses%}
+                <div class="col">
+                    <div class="card program-card h-100 shadow-sm">
+                        <img src="https://via.placeholder.com/500x300" alt="Course Thumbnail" class="program-thumbnail">
+                        <div class="card-body text-left">
+                            <h4 class="card-title program-title">{{course.course_name}}</h4>
+                            <p class="program-details">{{course.instructor_name}}</p>
+                            <!-- <p class="program-details">Enrolled Students: 150</p> -->
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'course_instructor' course.id %}" class="btn btn-primary">Enroll Now</a>
+                            {% else %}
+                            <a href="/login/" class="btn btn-primary">Get Started</a>
+
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="pb-3 border-bottom text-center">Our Degree Programs</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card program-card h-100 shadow-sm">
+                        <img src="https://via.placeholder.com/500x300" alt="Course Thumbnail" class="program-thumbnail">
+                        <div class="card-body text-center">
+                            <h4 class="card-title program-title">Bachelor of Technology (B.Tech) in Electronics and Communication</h4>
+                            <p class="program-details">Instructor: Dr. Alan Brown</p>
+                            <p class="program-details">Enrolled Students: 300</p>
+                            <a href="#" class="btn btn-primary">Watch Video</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card program-card h-100 shadow-sm">
+                        <img src="https://via.placeholder.com/500x300" alt="Course Thumbnail" class="program-thumbnail">
+                        <div class="card-body text-center">
+                            <h4 class="card-title program-title">Bachelor of Technology (B.Tech) in Computer Science Engineering</h4>
+                            <p class="program-details">Instructor: Dr. Sophia Green</p>
+                            <p class="program-details">Enrolled Students: 250</p>
+                            <a href="#" class="btn btn-primary">Watch Video</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card program-card h-100 shadow-sm">
+                        <img src="https://via.placeholder.com/500x300" alt="Course Thumbnail" class="program-thumbnail">
+                        <div class="card-body text-center">
+                            <h4 class="card-title program-title">Bachelor of Technology (B.Tech) in Civil Engineering</h4>
+                            <p class="program-details">Instructor: Prof. Mark Johnson</p>
+                            <p class="program-details">Enrolled Students: 180</p>
+                            <a href="#" class="btn btn-primary">Watch Video</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container text-center">
+            <h2 class="pb-3 border-bottom text-primary fw-bold">Why Choose Us?</h2>
+            <p class="lead">Our programs are designed to equip you with industry-relevant skills and knowledge to excel in your career.</p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+                <button type="button" class="btn btn-primary btn-lg px-5">Join Now</button>
+                <button type="button" class="btn btn-outline-secondary btn-lg px-5">Get Started</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <p>&copy; 2024 CourseIt. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

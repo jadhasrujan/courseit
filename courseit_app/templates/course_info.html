@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ course.course_name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Sidebar Styling */
+    .sidebar {
+      background-color: #1a202c; /* Dark background */
+      color: #cbd5e0; /* Light gray text */
+      width: 250px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding-top: 20px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-header {
+      font-size: 1.75rem;
+      font-weight: bold;
+      color: #63B3ED; /* Light blue color for the title */
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar-item {
+      padding: 12px 20px;
+      font-size: 1.125rem;
+      color: #E2E8F0;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .sidebar-item:hover {
+      background-color: #2b6cb0; /* Darker blue on hover */
+      padding-left: 25px; /* Smooth expansion */
+    }
+
+    .sidebar-item i {
+      margin-right: 12px;
+    }
+
+    .sidebar-item.active {
+      background-color: #4c51bf;
+      padding-left: 25px;
+    }
+
+    .hidden-section {
+      display: none;
+      padding-left: 30px;
+    }
+
+    .sidebar-item.active + .hidden-section {
+      display: block;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        text-align:left;
+        height: auto;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+    }
+
+    /* Section content */
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+      width: 100%;
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 500px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-info h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .video-info p {
+      font-size: 1.125rem;
+      color: #4A5568;
+    }
+
+  </style>
+</head>
+
+<body class="bg-gray-50">
+
+  {% if course_data %}
+  <div class="flex">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>{{ course.course_name }}</h1>
+      </div>
+
+      <!-- Course Sections -->
+      {% for section_data in course_data %}
+      <div class="section mb-5" style="text-align:left">
+        <button class="sidebar-item" onclick="toggleSection('section{{ forloop.counter }}')">
+          <i class="bi bi-caret-right-fill"></i>{{ section_data.section.section_name }}
+        </button>
+        <div id="section{{ forloop.counter }}" class="hidden-section" style="text-align:left">
+          {% for chapter in section_data.chapters %}
+          <a class="sidebar-item" onclick="changeVideo('{{ chapter.video_url }}', '{{ chapter.title }}', '{{ chapter.description }}')">
+            <input type="checkbox" class="mr-3" id="chapter{{ chapter.id }}">
+            <label for="chapter{{ chapter.id }}" class="truncate w-full">{{ chapter.title }}</label>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="video-container">
+        <!-- Video Player -->
+        <iframe id="video-player" src="{{ course_data.0.chapters.0.video_url }}" title="YouTube video player" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+
+      <div class="video-info">
+        <h2 id="video-title">{{ course_data.0.chapters.0.title }}</h2>
+        <p id="video-description">{{ course_data.0.chapters.0.description }}</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // JavaScript for changing the video on click
+    function changeVideo(url, title, description) {
+      document.getElementById('video-player').src = url;
+      document.getElementById('video-title').innerText = title;
+      document.getElementById('video-description').innerText = description;
+    }
+
+    // Toggle Section visibility
+    function toggleSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      section.classList.toggle('hidden-section');
+    }
+  </script>
+
+  {% endif %}
+</body>
+
+</html>
